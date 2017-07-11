@@ -1,0 +1,67 @@
+{
+  "name": "gas-http-client",
+  "version": "0.1.0",
+  "description": "simple http client with google apps UrlFetchApp",
+  "main": "dist/http_client.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/colorfulcompany/gas-http-clint.git"
+  },
+  "keywords": [
+    "gas",
+    "googleapps",
+    "http"
+  ],
+  "author": "Colorful Company,Inc.",
+  "bugs": {
+    "url": "https://github.com/colorfulcompany/gas-http-client/issues"
+  },
+  "homepage": "https://github.com/colorfulcompany/gas-http-client#readme",
+  "eslintConfig": {
+    "parserOptions": {
+      "ecmaVerision": 6,
+      "sourceType": "module"
+    },
+    "extends": "eslint:recommended",
+    "env": {
+      "node": true,
+      "browser": true
+    },
+    "rules": {
+      "no-var": "error",
+      "no-console": [
+        "error",
+        {
+          "allow": [
+            "warn",
+            "error"
+          ]
+        }
+      ],
+      "camelcase": "error"
+    }
+  },
+  "dependencies": {
+    "lodash": "^4.17.4"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-gas": "^1.0.0",
+    "eslint": "^4.2.0",
+    "intelli-espower-loader": "^1.0.1",
+    "jsdoc": "^3.5.1",
+    "mocha": "^3.4.2",
+    "power-assert": "^1.4.4",
+    "sinon": "^2.3.7"
+  },
+  "scripts": {
+    "build": "babel lib --out-dir dist",
+    "node": "node --require babel-register",
+    "test": "mocha --require intelli-espower-loader --require babel-register --recursive test",
+    "lint": "eslint lib",
+    "postinstall": "npm run build",
+    "doc": "jsdoc -r -P ./package.json -d ./doc lib/"
+  }
+}
