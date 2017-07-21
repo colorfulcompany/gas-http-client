@@ -6,3 +6,4 @@ dist
 ._*
 doc/
 flow.log*
+flow-typed/npm/
