@@ -1,5 +1,6 @@
 import GasHttpClient from '../lib/gas_http_client'
 import assert        from 'power-assert'
+import sinon         from 'sinon'
 
 describe('GasHttpClient', ()=> {
   let client :string
@@ -19,6 +20,23 @@ describe('GasHttpClient', ()=> {
       assert.deepEqual(
         ['get', 'delete', 'patch', 'post', 'put'],
         client.methods())
+    })
+  })
+
+  describe('#endpoint', ()=> {
+    describe('thru', ()=> {
+      it('', ()=> {
+        assert.equal('http://localhost:3000', client.endpoint())
+      })
+    })
+
+    describe('stub out', ()=> {
+      beforeEach(()=> {
+        sinon.stub(client, 'endpoint').returns('http://example.com')
+      })
+      it('', ()=> {
+        assert.equal('http://example.com', client.endpoint())
+      })
     })
   })
 
