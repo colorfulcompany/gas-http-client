@@ -81,4 +81,59 @@ describe('GasHttpClient', ()=> {
       })
     })
   })
+
+  describe('#headers', ()=> {
+    describe('getter', ()=> {
+      beforeEach(()=> {
+        client.clear()
+      })
+
+      it('', ()=> {
+        assert.deepEqual({}, client.headers())
+      })
+    })
+
+    describe('setter', ()=> {
+      describe('once', ()=> {
+        beforeEach(()=> {
+          client.headers({'If-Modified-Since': new Date('2017-07-22')})
+        })
+
+        it('', ()=> {
+          assert.deepEqual(
+            {'If-Modified-Since': new Date('2017-07-22')},
+            client.headers())
+        })
+      })
+
+      describe('overwrite', ()=> {
+        beforeEach(()=> {
+          client.headers({'If-Modified-Since': new Date('2017-07-22')})
+          client.headers({'If-Modified-Since': new Date('2017-07-14')})
+        })
+
+        it('', ()=> {
+          assert.deepEqual(
+            {'If-Modified-Since': new Date('2017-07-14')},
+            client.headers())
+        })
+      })
+
+      describe('append', ()=> {
+        beforeEach(()=> {
+          client.headers({'If-Modified-Since': new Date('2017-07-22')})
+          client.headers({'If-None-Match': 'b6dec5fa1e65ea2b8c7cb9ecc3074e44'})
+        })
+
+        it('', ()=> {
+          assert.deepEqual(
+            {
+              'If-Modified-Since': new Date('2017-07-22'),
+              'If-None-Match': 'b6dec5fa1e65ea2b8c7cb9ecc3074e44'
+            },
+            client.headers())
+        })
+      })
+    })
+  })
 })
