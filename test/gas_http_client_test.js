@@ -64,4 +64,21 @@ describe('GasHttpClient', ()=> {
       assert.equal(true, _.size(client.defaultOpts()) > 0)
     })
   })
+
+  describe('#opts', ()=> {
+    describe('getter', ()=> {
+      it('', ()=> {
+        assert.deepEqual({method: 'get'}, client.opts())
+      })
+    })
+
+    describe('setter', ()=> {
+      beforeEach(()=> {
+        client.opts({method: 'put'})
+      })
+      it('', ()=> {
+        assert.deepEqual({method: 'put'}, client.opts())
+      })
+    })
+  })
 })
