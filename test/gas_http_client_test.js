@@ -1,6 +1,7 @@
 import GasHttpClient from '../lib/gas_http_client'
 import assert        from 'power-assert'
 import sinon         from 'sinon'
+import _             from 'lodash/lodash.min'
 
 describe('GasHttpClient', ()=> {
   let client :string
@@ -51,6 +52,16 @@ describe('GasHttpClient', ()=> {
 
     it('1 is invalid', ()=> {
       assert.equal(false, client.isValidMethod(1))
+    })
+  })
+
+  describe('#defaultOpts', ()=> {
+    it('typeof is object', ()=> {
+      assert.equal('object', typeof client.defaultOpts())
+    })
+
+    it('size > 0', ()=> {
+      assert.equal(true, _.size(client.defaultOpts()) > 0)
     })
   })
 })
