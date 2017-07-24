@@ -136,4 +136,24 @@ describe('GasHttpClient', ()=> {
       })
     })
   })
+
+  describe('#deleteHeader', ()=> {
+    describe('exist', ()=> {
+      beforeEach(()=> {
+        client.headers({'If-Modified-Since': new Date('2017-07-22')})
+      })
+
+      it('return deleted object', ()=> {
+        assert.deepEqual(
+          {'If-Modified-Since': new Date('2017-07-22')}
+          ,client.deleteHeader('If-Modified-Since'))
+      })
+    })
+
+    describe('not exist', ()=> {
+      it('return false', ()=> {
+        assert.equal(false, client.deleteHeader('If-Modified-Since'))
+      })
+    })
+  })
 })
