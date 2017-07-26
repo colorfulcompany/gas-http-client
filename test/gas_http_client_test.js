@@ -83,11 +83,24 @@ describe('GasHttpClient', ()=> {
     })
 
     describe('setter', ()=> {
-      beforeEach(()=> {
-        client.opts({method: 'put'})
+      describe('valid', ()=> {
+        beforeEach(()=> {
+          client.opts({method: 'put'})
+        })
+        it('', ()=> {
+          assert.deepEqual({method: 'put'}, client.opts())
+        })
       })
-      it('', ()=> {
-        assert.deepEqual({method: 'put'}, client.opts())
+
+      describe('invalid', ()=> {
+        it('', ()=> {
+          assert.throws(
+            ()=> {
+              client.opts({methods: 'put'})
+            },
+            /methods is not valid param/
+            )
+        })
       })
     })
   })
