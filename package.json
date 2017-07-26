@@ -63,7 +63,8 @@
     "jsdoc": "^3.5.1",
     "mocha": "^3.4.2",
     "power-assert": "^1.4.4",
-    "sinon": "^2.3.7"
+    "sinon": "^2.3.7",
+    "url": "^0.11.0"
   },
   "scripts": {
     "build": "babel lib --out-dir dist",
