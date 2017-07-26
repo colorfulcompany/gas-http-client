@@ -4,7 +4,7 @@ import sinon         from 'sinon'
 import _             from 'lodash/lodash.min'
 
 describe('GasHttpClient', ()=> {
-  let client :string
+  let client
   
   beforeEach(()=> {
     client = new GasHttpClient({}, 'http://localhost:3000')
