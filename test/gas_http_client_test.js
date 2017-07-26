@@ -208,4 +208,14 @@ describe('GasHttpClient', ()=> {
       })
     })
   })
+
+  describe('#request', ()=> {
+    beforeEach(()=> {
+      sinon.stub(client, 'app').returns({fetch: function(){ return {} }})
+    })
+
+    it("request()'s return value is response()", ()=> {
+      assert.deepEqual(client.request(), client.response())
+    })
+  })
 })
