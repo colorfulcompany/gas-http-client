@@ -65,6 +65,16 @@ describe('GasHttpClient', ()=> {
     })
   })
 
+  describe('#isValidOptionKey', ()=> {
+    it('method is isValid', ()=> {
+      assert.equal(true, client.isValidOptionKey('method'))
+    })
+
+    it('header is not isValid', ()=> {
+      assert.equal(false, client.isValidOptionKey('header'))
+    })
+  })
+
   describe('#opts', ()=> {
     describe('getter', ()=> {
       it('', ()=> {
