@@ -156,4 +156,56 @@ describe('GasHttpClient', ()=> {
       })
     })
   })
+
+  describe('#buildUrl', ()=> {
+    // endpoint 'http://localhost:3000'
+
+    it('return endpoint  empty', ()=> {
+      assert.equal('http://localhost:3000', client.buildUrl())
+    })
+
+    it('thru when absolute uri given', ()=> {
+      assert.equal('http://example.com/path/to/endpoint?foo=bar', client.buildUrl('http://example.com/path/to/endpoint?foo=bar'))
+    })
+
+    it('only path', ()=> {
+      assert.equal('http://localhost:3000/path/to/endpoint', client.buildUrl('/path/to/endpoint'))
+    })
+
+    describe('relative path', ()=> {
+      let client
+
+      beforeEach(()=> {
+        client = new GasHttpClient({}, 'http://localhost:3000/path/to/endpoint')
+      })
+
+      it('parent', ()=> {
+        assert.equal('http://localhost:3000/path/', client.buildUrl('..'))
+      })
+    })
+
+    describe('query string', ()=> {
+      it('foo=bar without ?', ()=> {
+        assert('http://localhost:3000/?foo=bar' !== client.buildUrl('foo=bar'))
+      })
+
+      it('?foo=bar', ()=> {
+        assert('http://localhost:3000/?foo=bar', client.buildUrl('?foo=bar'))
+      })
+    })
+
+    describe('with object, replace parts', ()=> {
+      it('query {foo: "bar"}', ()=> {
+        assert.equal('http://localhost:3000/?foo=bar', client.buildUrl({query: {foo: 'bar'}}))
+      })
+
+      it('search is not object', ()=> {
+        assert.throws(()=> {client.buildUrl({search: {foo: 'bar'}})}, TypeError)
+      })
+
+      it('search is string', ()=> {
+        assert.equal('http://localhost:3000/?foo=bar', client.buildUrl({search: 'foo=bar'}))
+      })
+    })
+  })
 })
