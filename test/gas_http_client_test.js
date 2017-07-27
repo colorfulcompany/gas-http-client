@@ -260,6 +260,37 @@ describe('GasHttpClient', ()=> {
     })
   })
 
+  describe('#buildParamForJSON', ()=> {
+    it('method get', ()=> {
+      assert.deepEqual(
+        {
+          'method': 'get',
+          'headers': {
+            'Accept': 'application/json'
+          }
+        },
+        client.buildParamForJSON())
+    })
+
+    it('method post', ()=> {
+      assert.deepEqual(
+        {
+          'method':      'post',
+          'contentType': 'application/json',
+          'headers':     {
+            'Accept': 'application/json'
+          },
+          'payload': JSON.stringify({'hello': 'world'})
+        },
+        client.buildParamForJSON({
+          'method':  'post',
+          'payload': {
+            'hello': 'world'
+          }
+        }))
+    })
+  })
+
   describe('#request', ()=> {
     beforeEach(()=> {
       sinon.stub(client, 'app').returns({fetch: function(){ return {} }})
