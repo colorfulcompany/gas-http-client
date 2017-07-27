@@ -92,7 +92,7 @@ describe('GasHttpClient', ()=> {
         })
       })
 
-      describe('invalid', ()=> {
+      describe('invalid option key', ()=> {
         it('', ()=> {
           assert.throws(
             ()=> {
@@ -100,6 +100,17 @@ describe('GasHttpClient', ()=> {
             },
             /methods is not valid param/
             )
+        })
+      })
+
+      describe('invalid method', ()=> {
+        it('', ()=> {
+          assert.throws(
+            ()=> {
+              client.opts({method: 'option'})
+            },
+            /option is not valid method/
+          )
         })
       })
     })
