@@ -243,6 +243,23 @@ describe('GasHttpClient', ()=> {
     })
   })
 
+  describe('#buildParam', ()=> {
+    beforeEach(()=> {
+      client.headers({'User-Agent': 'Luckyman 2.0'})
+    })
+
+    it('', ()=> {
+      assert.deepEqual(
+        {
+          'method':  'get',
+          'headers': {
+            'User-Agent': 'Luckyman 2.0'
+          }
+        },
+        client.buildParam())
+    })
+  })
+
   describe('#request', ()=> {
     beforeEach(()=> {
       sinon.stub(client, 'app').returns({fetch: function(){ return {} }})
