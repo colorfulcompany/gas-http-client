@@ -113,6 +113,35 @@ describe('GasHttpClient', ()=> {
           )
         })
       })
+
+      describe('update headers', ()=> {
+        beforeEach(()=> {
+          client.opts({
+            method:  'put',
+            headers: {
+              'Accept':     'application/json',
+              'User-Agent': 'Action'
+            }
+          })
+        })
+
+        it('', ()=> {
+          assert.deepEqual(
+            {
+              method:  'put',
+              headers: {
+                'Accept':     'application/json',
+                'User-Agent': 'Brothers'
+              }
+            },
+            client.opts({
+              headers: {
+                'User-Agent': 'Brothers'
+              }
+            })
+          )
+        })
+      })
     })
   })
 
