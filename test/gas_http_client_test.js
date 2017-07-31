@@ -318,6 +318,34 @@ describe('GasHttpClient', ()=> {
           }
         }))
     })
+
+    it('with jwt', ()=> {
+      assert.deepEqual(
+        {
+          'method':      'post',
+          'contentType': 'application/json',
+          'payload':     JSON.stringify({
+            'hello': 'world',
+            'exp':   1500681600000
+          }),
+          'headers':     {
+            'Accept':    'application/json',
+            'X-GAS-JWT': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJoZWxsbyI6IndvcmxkIiwiZXhwIjoxNTAwNjgxNjAwMDAwfQ.ieEa6hVDwQW4CrsQEg6o92bvcREiRp81mv1UVZe2Gik'
+          }
+        },
+        client.buildParamForJSON({
+          'method':  'post',
+          'payload': {
+            'hello': 'world',
+            'exp':   new Date('2017-07-22').getTime()
+          },
+          'withJwt': {
+            'secret':      'abc',
+            'headerField': 'X-GAS-JWT',
+          }
+        })
+      )
+    })
   })
 
   describe('#request', ()=> {
