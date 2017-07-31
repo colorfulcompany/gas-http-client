@@ -1752,6 +1752,10 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.3.6"
 
+"kaleoJWT@https://github.com/KaleoSoftware/KaleoJWT":
+  version "1.0.0"
+  resolved "https://github.com/KaleoSoftware/KaleoJWT#1c1dbe90b0d9fbb15401527f1f32832fd4494ae3"
+
 kind-of@^3.0.2:
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-3.2.2.tgz#31ea21a734bab9bbb0f32466d893aea51e4a3c64"
