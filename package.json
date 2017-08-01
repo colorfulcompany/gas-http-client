@@ -1,12 +1,12 @@
 {
-  "name": "gas-http-client",
+  "name": "@colorfulcompany/gas-http-client",
   "version": "0.2.0",
   "description": "simple http client with google apps UrlFetchApp",
   "main": "dist/gas_http_client.js",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/colorfulcompany/gas-http-clint.git"
+    "url": "https://github.com/colorfulcompany/gas-http-client.git"
   },
   "keywords": [
     "gas",
