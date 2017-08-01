@@ -11,4 +11,5 @@ dependencies:
 test:
   override:
     - yarn lint
+    - yarn flow
     - yarn test
