@@ -1,6 +1,6 @@
 {
   "name": "gas-http-client",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "simple http client with google apps UrlFetchApp",
   "main": "dist/gas_http_client.js",
   "license": "MIT",
