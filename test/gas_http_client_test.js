@@ -339,7 +339,7 @@ describe('GasHttpClient', ()=> {
             'hello': 'world',
             'exp':   new Date('2017-07-22').getTime()
           },
-          'withJwt': {
+          'withJWT': {
             'secret':      'abc',
             'headerField': 'X-GAS-JWT',
           }
