@@ -3,6 +3,8 @@ GasHttpClient
 
 Simple Google Apps Script UrlFetchApp wrapper supporting message authentication with KaleoJWT
 
+[KaleoSoftware/KaleoJWT: Super simple, portable JWT implementation that supports only SHA256 algo](https://github.com/KaleoSoftware/KaleoJWT)
+
 feature
 =======
 
