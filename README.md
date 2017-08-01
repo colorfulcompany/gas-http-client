@@ -1,7 +1,7 @@
 GasHttpClient
 =============
 
-Simple Google Apps Script UrlFetchApp wrapper
+Simple Google Apps Script UrlFetchApp wrapper supporting message authentication with KaleoJWT
 
 feature
 =======
@@ -20,10 +20,12 @@ client.opts({
   method:  'post',
   payload: {
     thank: 'you',
-    very:  'mutch'
+    very:  'mutch',
+    exp:   new Date('2017-07-22').getTime()
   },
-  headers: {
-    'X-API-Token': 'abc'
+  withJWT: {
+    'secret':      'abc',
+    'headerField': 'X-GAS-JWT',
   }
 })
 
@@ -37,7 +39,7 @@ You can use `opts()`, `headers()` and `buildParam()` or `buildParamJSON()` for t
 Requirements for bundling this package
 ======================================
 
-With version 0.1.0, you need to add these dependencies as below, for using this package to downloading from GitHub and building with Babel.
+With version 0.2.0, you need to add these dependencies as below, for using this package to downloading from GitHub and building with Babel.
 
  * babel-plugin-transform-class-properties
  * babel-preset-es2015
