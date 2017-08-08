@@ -10,8 +10,28 @@ jobs:
         - /release\/.*/
         - /hotfix\/.*/
     steps:
+      - run:
+          name: 'install yarn'
+          command: which yarn > /dev/null || npm install -g yarn
       - checkout
+      - restore_cache:
+          keys:
+            - node-modules-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - node-modules-{{ .Branch }}
+            - node-modules
       - run: yarn install
+      - save_cache:
+          key: node-modules-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          paths:
+            - node_modules
+      - save_cache:
+          key: node-modules-{{ .Branch }}
+          paths:
+            - node_modules
+      - save_cache:
+          key: node-modules
+          paths:
+            - node_modules
       - run: yarn lint
       - run: yarn flow
       - run: yarn test
