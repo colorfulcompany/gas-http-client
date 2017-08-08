@@ -1,0 +1,17 @@
+version: '2'
+
+jobs:
+  build:
+    machine: true
+    branches:
+      only:
+        - master
+        - /pull-req\/.*/
+        - /release\/.*/
+        - /hotfix\/.*/
+    steps:
+      - checkout
+      - yarn install
+      - yarn lint
+      - yarn flow
+      - yarn test
