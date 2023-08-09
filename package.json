@@ -6,7 +6,7 @@
   "engines": {
     "node": ">= 16"
   },
-  "license": "MIT",
+  "license": "BSD-2-clause",
   "repository": {
     "type": "git",
     "url": "https://github.com/colorfulcompany/gas-http-client.git"
