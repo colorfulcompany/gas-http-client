@@ -1,9 +1,7 @@
 *~
 *.bak
 node_modules
-dist
 .DS_Store
 ._*
 doc/
-flow.log*
-flow-typed/npm/
+yarn-error.log
