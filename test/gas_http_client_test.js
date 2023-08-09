@@ -1,13 +1,18 @@
-import GasHttpClient from '../lib/gas_http_client'
+/* global describe, it, beforeEach, afterEach */
+
 import assert from 'power-assert'
 import sinon from 'sinon'
-import _ from 'lodash/lodash.min'
+import gas from 'gas-local'
+
+const app = gas.require('./src', {
+  console
+})
 
 describe('GasHttpClient', () => {
   let client
 
   beforeEach(() => {
-    client = new GasHttpClient({}, 'http://localhost:3000')
+    client = app.createClient({}, 'http://localhost:3000')
   })
 
   describe('#app', () => {
@@ -35,6 +40,7 @@ describe('GasHttpClient', () => {
       beforeEach(() => {
         sinon.stub(client, 'endpoint').returns('http://example.com')
       })
+      afterEach(() => { sinon.restore() })
       it('', () => {
         assert.equal('http://example.com', client.endpoint())
       })
@@ -61,7 +67,7 @@ describe('GasHttpClient', () => {
     })
 
     it('size > 0', () => {
-      assert.equal(true, _.size(client.defaultOpts()) > 0)
+      assert.equal(true, Object.keys(client.defaultOpts()).length > 0)
     })
   })
 
@@ -239,7 +245,7 @@ describe('GasHttpClient', () => {
       let client
 
       beforeEach(() => {
-        client = new GasHttpClient({}, 'http://localhost:3000/path/to/endpoint')
+        client = app.createClient({}, 'http://localhost:3000/path/to/endpoint')
       })
 
       it('parent', () => {
@@ -258,12 +264,13 @@ describe('GasHttpClient', () => {
     })
 
     describe('with object, replace parts', () => {
-      it('query {foo: "bar"}', () => {
-        assert.equal('http://localhost:3000/?foo=bar', client.buildUrl({ query: { foo: 'bar' } }))
-      })
+      // WHATWG URL object doesn't have query property
 
       it('search is not object', () => {
-        assert.throws(() => { client.buildUrl({ search: { foo: 'bar' } }) }, TypeError)
+        assert.throws(
+          () => { client.buildUrl({ search: { foo: 'bar' } }) },
+          { name: 'TypeError' }
+        )
       })
 
       it('search is string', () => {

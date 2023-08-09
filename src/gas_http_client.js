@@ -1,28 +1,32 @@
-//
-
-import _ from 'lodash/lodash.min'
-import url from 'url'
-import jwt from 'kaleoJWT/dist/KaleoJWT.min'
+/* global merge, cloneDeep, has, URL, jwt */
 
 class GasHttpClientInvalidOptionKey extends Error {
   constructor (key, validKeys) {
     super(`${key} is not valid param. select key from [${validKeys.join(', ')}]`)
   }
+
+  get name () { return 'GasHttpClientInvalidOptionKey' }
 }
 
 class GasHttpClientInvalidMethod extends Error {
   constructor (method, validMethods) {
     super(`${method} is not valid method, select method from [${validMethods.join(', ')}]`)
   }
+
+  get name () { return 'GasHttpClientInvalidMethod' }
 }
 
-class GasHttpClientNoJwtSecret extends Error {}
+class GasHttpClientNoJwtSecret extends Error {
+  get name () { return 'GasHttpClientNoJwtSecret' }
+}
 
 class GasHttpClient {
   /** @var {UrlFetchApp} */
   _app
   /** @var {String} */
   _endpoint
+  /** @var {Object} */
+  _url
   /** @var {Object} */
   _opts
   /** @var {Object} */
@@ -40,6 +44,7 @@ class GasHttpClient {
   constructor (app, endpoint, opts = undefined) {
     this._app = app
     this._endpoint = endpoint
+    this._url = new URL(endpoint)
     this.clear()
 
     this.opts(opts)
@@ -62,6 +67,13 @@ class GasHttpClient {
    */
   endpoint () {
     return this._endpoint
+  }
+
+  /**
+   * @return {Object}
+   */
+  url () {
+    return this._url
   }
 
   /**
@@ -127,7 +139,7 @@ class GasHttpClient {
           throw new GasHttpClientInvalidMethod(method, this.methods())
         }
       }
-      this._opts = _.merge(this._opts, opts)
+      this._opts = merge(this._opts, opts)
     }
 
     return this._opts
@@ -139,7 +151,7 @@ class GasHttpClient {
    */
   jwtOpts (opts = {}) {
     if (Object.keys(opts).length > 0) {
-      this._jwtOpts = _.merge(this._jwtOpts, opts)
+      this._jwtOpts = merge(this._jwtOpts, opts)
     }
 
     return this._jwtOpts
@@ -151,7 +163,7 @@ class GasHttpClient {
    */
   headers (headers = undefined) {
     if (typeof headers !== 'undefined') {
-      this._headers = _.merge(this._headers, headers)
+      this._headers = merge(this._headers, headers)
     }
 
     return this._headers
@@ -162,7 +174,7 @@ class GasHttpClient {
    * @return {mixed}  Object or false
    */
   deleteHeader (field) {
-    if (_.has(this._headers, field)) {
+    if (has(this._headers, field)) {
       const item = {}
       item[field] = this._headers[field]
 
@@ -195,13 +207,29 @@ class GasHttpClient {
    * @return {String}
    */
   buildUrl (uri = null) {
+    const url = (() => {
     if (typeof uri === 'string' && uri.length > 0) {
-      return url.resolve(this.endpoint(), uri)
+      return new URL(uri, this.endpoint())
     } else if (uri !== null && typeof uri === 'object') {
-      return url.format(_.merge(url.parse(this.endpoint(), true), uri))
+      const u = this.url()
+
+      for (const [key, value] of Object.entries(uri)) {
+        if (key === 'search' && typeof value !== 'string') {
+          throw new TypeError(`search property is string, but given ${JSON.stringify(value)}`)
+        }
+
+        u[key] = value
+      }
+
+      return u
     } else {
       return this.endpoint()
     }
+    })()
+
+    this._url = url
+
+    return url.toString()
   }
 
   /**
@@ -209,7 +237,7 @@ class GasHttpClient {
    * @return {Object}
    */
   buildParam (opts = {}) {
-    return _.merge(this.opts(opts), { headers: this.headers() })
+    return merge(this.opts(opts), { headers: this.headers() })
   }
 
   /**
@@ -224,7 +252,7 @@ class GasHttpClient {
       this.opts({ contentType: 'application/json' })
     }
 
-    const param = _.cloneDeep(this.buildParam(opts))
+    const param = cloneDeep(this.buildParam(opts))
     // encode payload
     if (typeof param.payload !== 'undefined' && typeof param.payload !== 'string') {
       param.payload = JSON.stringify(param.payload)
@@ -254,7 +282,7 @@ class GasHttpClient {
     let token
     let secret
     let headerField
-    const opts = _.cloneDeep(this.jwtOpts())
+    const opts = cloneDeep(this.jwtOpts())
 
     if (typeof opts.headerField === 'string') {
       headerField = opts.headerField
@@ -303,4 +331,12 @@ class GasHttpClient {
   }
 }
 
-export { GasHttpClient as default, GasHttpClientInvalidOptionKey, GasHttpClientInvalidMethod, GasHttpClientNoJwtSecret }
+/**
+ * @param {UrlFetchApp} app
+ * @param {String} endpoint
+ * @param {Object} [opts]
+ * @return {GasHttpClient}
+ */
+function createClient (app, endpoint, opts = undefined) { // eslint-disable-line no-unused-vars
+  return new GasHttpClient(app, endpoint, opts)
+}
