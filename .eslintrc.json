@@ -1,0 +1,13 @@
+{
+  "extends": "standard",
+  "env": {
+    "mocha": true
+  },
+  "ignorePatterns": [
+    "KaleoJWT.js",
+    "clonedeep.js",
+    "merge.js",
+    "has.js",
+    "url.js"
+  ]
+}

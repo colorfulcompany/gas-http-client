@@ -1,17 +1,17 @@
-// @flow
+//
 
 import _ from 'lodash/lodash.min'
 import url from 'url'
 import jwt from 'kaleoJWT/dist/KaleoJWT.min'
 
 class GasHttpClientInvalidOptionKey extends Error {
-  constructor(key :string, validKeys :Array<string>) {
+  constructor (key, validKeys) {
     super(`${key} is not valid param. select key from [${validKeys.join(', ')}]`)
   }
 }
 
 class GasHttpClientInvalidMethod extends Error {
-  constructor(method :string, validMethods :Array<string>) {
+  constructor (method, validMethods) {
     super(`${method} is not valid method, select method from [${validMethods.join(', ')}]`)
   }
 }
@@ -20,54 +20,54 @@ class GasHttpClientNoJwtSecret extends Error {}
 
 class GasHttpClient {
   /** @var {UrlFetchApp} */
-  _app :Object
+  _app
   /** @var {String} */
-  _endpoint :string
+  _endpoint
   /** @var {Object} */
-  _opts :Object
+  _opts
   /** @var {Object} */
-  _headers :Object = {}
+  _headers = {}
   /** @var {Object} */
-  _response :Object = {}
+  _response = {}
   /** @var {Object} */
-  _jwtOpts :Object = {}
+  _jwtOpts = {}
 
   /**
    * @param {UrlFetchApp} app
    * @param {String}      endpoint
    * @param {Object}      opts
    */
-  constructor(app :Object, endpoint :string, opts :mixed = undefined) {
-    this._app      = app
+  constructor (app, endpoint, opts = undefined) {
+    this._app = app
     this._endpoint = endpoint
     this.clear()
 
     this.opts(opts)
   }
 
-  clear() {
-    this._opts    = this.defaultOpts()
+  clear () {
+    this._opts = this.defaultOpts()
     this._headers = {}
   }
 
   /**
    * @return {Object}
    */
-  app() {
+  app () {
     return this._app
   }
 
   /**
    * @return {String}
    */
-  endpoint() {
+  endpoint () {
     return this._endpoint
   }
 
   /**
    * @return {Object}
    */
-  defaultOpts() {
+  defaultOpts () {
     return {
       method: 'get'
     }
@@ -76,7 +76,7 @@ class GasHttpClient {
   /**
    * @return {Array}
    */
-  optionKeys() :Array<string> {
+  optionKeys () {
     return [
       'contentType',
       'headers',
@@ -93,7 +93,7 @@ class GasHttpClient {
    * @param  {String}
    * @return {Boolean}
    */
-  isValidOptionKey(key :string) :boolean {
+  isValidOptionKey (key) {
     return this.optionKeys().indexOf(key) >= 0
   }
 
@@ -101,29 +101,29 @@ class GasHttpClient {
    * @param  {Object}
    * @return {Object}
    */
-  opts(opts :mixed = undefined) {
-    if ( opts && typeof opts === 'object' ) {
+  opts (opts = undefined) {
+    if (opts && typeof opts === 'object') {
       // store headers
-      if ( opts['headers'] && typeof opts['headers'] !== 'object' ) {
-        this.headers(opts['headers'])
-        delete(opts['headers'])
+      if (opts.headers && typeof opts.headers !== 'object') {
+        this.headers(opts.headers)
+        delete (opts.headers)
       }
       // store JWT options
-      if ( opts['withJWT'] && typeof opts['withJWT'] === 'object' ) {
-        let jwt = opts['withJWT']
-        delete opts['withJWT']
+      if (opts.withJWT && typeof opts.withJWT === 'object') {
+        const jwt = opts.withJWT
+        delete opts.withJWT
         this.jwtOpts(jwt)
       }
       // validate Option Key
-      Object.keys(opts).forEach((e)=> {
-        if ( !this.isValidOptionKey(e) ) {
-          throw new GasHttpClientInvalidOptionKey(e, this.optionKeys());
+      Object.keys(opts).forEach((e) => {
+        if (!this.isValidOptionKey(e)) {
+          throw new GasHttpClientInvalidOptionKey(e, this.optionKeys())
         }
       })
       // validate HTTP Method
-      if ( typeof opts['method'] === 'string' ) {
-        let method :string = opts['method']
-        if ( !this.isValidMethod(method) ) {
+      if (typeof opts.method === 'string') {
+        const method = opts.method
+        if (!this.isValidMethod(method)) {
           throw new GasHttpClientInvalidMethod(method, this.methods())
         }
       }
@@ -137,8 +137,8 @@ class GasHttpClient {
    * @param  {Object} parts
    * @return {Object}
    */
-  jwtOpts(opts :Object = {}) {
-    if ( Object.keys(opts).length > 0 ) {
+  jwtOpts (opts = {}) {
+    if (Object.keys(opts).length > 0) {
       this._jwtOpts = _.merge(this._jwtOpts, opts)
     }
 
@@ -149,8 +149,8 @@ class GasHttpClient {
    * @param  {Object}
    * @return {Object}
    */
-  headers(headers :mixed = undefined) {
-    if ( typeof headers !== 'undefined' ) {
+  headers (headers = undefined) {
+    if (typeof headers !== 'undefined') {
       this._headers = _.merge(this._headers, headers)
     }
 
@@ -161,12 +161,12 @@ class GasHttpClient {
    * @param  {String} field
    * @return {mixed}  Object or false
    */
-  deleteHeader(field :string) :mixed {
-    if ( _.has(this._headers, field) ) {
-      let item = {}
+  deleteHeader (field) {
+    if (_.has(this._headers, field)) {
+      const item = {}
       item[field] = this._headers[field]
 
-      if ( delete this._headers[field] ) {
+      if (delete this._headers[field]) {
         return item
       } else {
         return false
@@ -179,14 +179,14 @@ class GasHttpClient {
   /**
    * @return {Array}
    */
-  methods() :Array<string> {
+  methods () {
     return ['get', 'delete', 'patch', 'post', 'put']
   }
 
   /**
    * @return {Boolean}
    */
-  isValidMethod(method :string) :boolean {
+  isValidMethod (method) {
     return this.methods().indexOf(method) >= 0
   }
 
@@ -194,10 +194,10 @@ class GasHttpClient {
    * @param  {String} uri
    * @return {String}
    */
-  buildUrl(uri :mixed = null) {
-    if ( typeof uri === 'string' && uri.length > 0 ) {
+  buildUrl (uri = null) {
+    if (typeof uri === 'string' && uri.length > 0) {
       return url.resolve(this.endpoint(), uri)
-    } else if ( uri !== null && typeof uri === 'object' ) {
+    } else if (uri !== null && typeof uri === 'object') {
       return url.format(_.merge(url.parse(this.endpoint(), true), uri))
     } else {
       return this.endpoint()
@@ -208,36 +208,36 @@ class GasHttpClient {
    * @param  {Object} opts
    * @return {Object}
    */
-  buildParam(opts :Object = {}) {
-    return _.merge(this.opts(opts), {headers: this.headers()})
+  buildParam (opts = {}) {
+    return _.merge(this.opts(opts), { headers: this.headers() })
   }
 
   /**
    * @param  {Object} opts
    * @return {Object}
    */
-  buildParamForJSON(opts :Object = {}) {
-    this.headers({'Accept': 'application/json'})
+  buildParamForJSON (opts = {}) {
+    this.headers({ Accept: 'application/json' })
 
-    if ( (typeof opts['method'] != 'undefined' && opts['method'] != 'get')
-      || this.opts()['method'] != 'get' ) {
-      this.opts({'contentType': 'application/json'})
+    if ((typeof opts.method !== 'undefined' && opts.method !== 'get') ||
+      this.opts().method !== 'get') {
+      this.opts({ contentType: 'application/json' })
     }
 
-    let param = _.cloneDeep(this.buildParam(opts))
+    const param = _.cloneDeep(this.buildParam(opts))
     // encode payload
-    if ( typeof param['payload'] !== 'undefined' && typeof param['payload'] !== 'string' ) {
-      param['payload'] = JSON.stringify(param['payload'])
+    if (typeof param.payload !== 'undefined' && typeof param.payload !== 'string') {
+      param.payload = JSON.stringify(param.payload)
     }
 
     // generate jwt
-    if ( typeof this.opts()['payload'] !== 'undefined' &&
-         typeof this.opts()['payload'] == 'object' &&
-         typeof this.jwtOpts()['secret'] == 'string' ) {
-      let jwt = this.buildJwt(this.opts()['payload'])
-      if ( jwt ) {
-        let [field, token] = jwt
-        param['headers'][field] = token
+    if (typeof this.opts().payload !== 'undefined' &&
+         typeof this.opts().payload === 'object' &&
+         typeof this.jwtOpts().secret === 'string') {
+      const jwt = this.buildJwt(this.opts().payload)
+      if (jwt) {
+        const [field, token] = jwt
+        param.headers[field] = token
       }
     }
 
@@ -250,27 +250,27 @@ class GasHttpClient {
    * @param  {Object} payload
    * @return {mixed}
    */
-  buildJwt(payload :Object) {
+  buildJwt (payload) {
     let token
     let secret
     let headerField
-    let opts        = _.cloneDeep(this.jwtOpts())
+    const opts = _.cloneDeep(this.jwtOpts())
 
-    if ( typeof opts['headerField'] === 'string' ) {
-      headerField = opts['headerField']
-      delete opts['headerField']
+    if (typeof opts.headerField === 'string') {
+      headerField = opts.headerField
+      delete opts.headerField
     }
 
-    if ( typeof opts['secret'] == 'string' && opts['secret'].length > 0 ) {
-      secret = opts['secret']
-      delete opts['secret']
+    if (typeof opts.secret === 'string' && opts.secret.length > 0) {
+      secret = opts.secret
+      delete opts.secret
 
       token = jwt.sign(payload, secret)
     } else {
       throw new GasHttpClientNoJwtSecret('no jwt secret specified')
     }
 
-    return ( headerField && token ) ? [headerField, token] : false
+    return (headerField && token) ? [headerField, token] : false
   }
 
   /**
@@ -278,7 +278,7 @@ class GasHttpClient {
    * @param  {Object} opts
    * @return {HTTPResponse}
    */
-  request(uri :mixed = null, opts :Object = {}) {
+  request (uri = null, opts = {}) {
     this._response = this.app().fetch(this.buildUrl(uri), this.buildParam(opts))
 
     return this.response()
@@ -289,7 +289,7 @@ class GasHttpClient {
    * @param  {Object} opts
    * @return {HTTPResponse}
    */
-  requestJSON(uri :mixed = null, opts :Object = {}) {
+  requestJSON (uri = null, opts = {}) {
     this._response = this.app().fetch(this.buildUrl(uri), this.buildParamForJSON(opts))
 
     return this.response()
@@ -298,7 +298,7 @@ class GasHttpClient {
   /**
    * @return {Object}
    */
-  response() {
+  response () {
     return this._response
   }
 }
