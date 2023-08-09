@@ -208,23 +208,23 @@ class GasHttpClient {
    */
   buildUrl (uri = null) {
     const url = (() => {
-    if (typeof uri === 'string' && uri.length > 0) {
-      return new URL(uri, this.endpoint())
-    } else if (uri !== null && typeof uri === 'object') {
-      const u = this.url()
+      if (typeof uri === 'string' && uri.length > 0) {
+        return new URL(uri, this.endpoint())
+      } else if (uri !== null && typeof uri === 'object') {
+        const u = this.url()
 
-      for (const [key, value] of Object.entries(uri)) {
-        if (key === 'search' && typeof value !== 'string') {
-          throw new TypeError(`search property is string, but given ${JSON.stringify(value)}`)
+        for (const [key, value] of Object.entries(uri)) {
+          if (key === 'search' && typeof value !== 'string') {
+            throw new TypeError(`search property is string, but given ${JSON.stringify(value)}`)
+          }
+
+          u[key] = value
         }
 
-        u[key] = value
+        return u
+      } else {
+        return this.endpoint()
       }
-
-      return u
-    } else {
-      return this.endpoint()
-    }
     })()
 
     this._url = url
