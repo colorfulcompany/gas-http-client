@@ -14,10 +14,19 @@ feature
 Usage
 =====
 
-```javascript
-import GasHttpClient from 'gas-http-client'
+Prepare
+-------
 
-let client = new GasHttpClient(UrlFetchApp, 'https://example.com')
+ 1. clone this repo
+ 2. clasp init & clasp push
+ 3. deploy this as Library and memo Library ID from Project settings
+ 4. add Library with memoed ID from Script Editor
+
+create Reader from Apps Script Project
+--------------------------------------
+
+```javascript
+const client = GasHttpClient.createClient(UrlFetchApp, 'https://example.com')
 client.opts({
   method:  'post',
   payload: {
@@ -31,7 +40,7 @@ client.opts({
   }
 })
 
-let response = client.requestJSON('/post')
+const response = client.requestJSON('/post')
 ```
 
 Note: `requestJSON()` add header `Accept: application/json` and `Content-Type: application/json` automatically.
