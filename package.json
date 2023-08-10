@@ -1,6 +1,6 @@
 {
   "name": "@colorfulcompany/gas-http-client",
-  "version": "1.0.0-beta",
+  "version": "1.0.0",
   "description": "simple http client with google apps UrlFetchApp",
   "type": "module",
   "engines": {
