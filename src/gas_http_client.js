@@ -20,22 +20,19 @@ class GasHttpClientNoJwtSecret extends Error {
   get name () { return 'GasHttpClientNoJwtSecret' }
 }
 
+/**
+ * A class that runs as an HTTP client using UrlFetchApp
+ *
+ * @class
+ * @property {UrlFetchApp} _app
+ * @property {string} _endpoint
+ * @property {Object} _url URLオブジェクト
+ * @property {Object} _opts
+ * @property {Object} _headers
+ * @property {Object} _response
+ * @property {Object} _jwtOpts
+ */
 class GasHttpClient {
-  /** @var {UrlFetchApp} */
-  _app
-  /** @var {String} */
-  _endpoint
-  /** @var {Object} */
-  _url
-  /** @var {Object} */
-  _opts
-  /** @var {Object} */
-  _headers = {}
-  /** @var {Object} */
-  _response = {}
-  /** @var {Object} */
-  _jwtOpts = {}
-
   /**
    * @param {UrlFetchApp} app
    * @param {String}      endpoint
@@ -53,6 +50,8 @@ class GasHttpClient {
   clear () {
     this._opts = this.defaultOpts()
     this._headers = {}
+    this._response = {}
+    this._jwtOpts = {}
   }
 
   /**
