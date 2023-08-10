@@ -45,6 +45,6 @@
     "test": "mocha --require intelli-espower-loader --recursive test",
     "lint": "eslint src test",
     "importDeps": "rollup -c",
-    "doc": "jsdoc -r -P ./package.json -d ./doc src/gas_http_client.js"
+    "doc": "jsdoc -c jsdoc.json -d ./doc -a all -r src"
   }
 }

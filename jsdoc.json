@@ -1,0 +1,13 @@
+{
+  "source": {
+    "includePattern": ".+\\.js$",
+    "exclude": [
+      "src/KaleoJWT.js",
+      "src/clonedeep.js",
+      "src/has.js",
+      "src/merge.js",
+      "src/url.js"
+    ],
+    "excludePattern": ".+/node_modules/.+"
+  }
+}
