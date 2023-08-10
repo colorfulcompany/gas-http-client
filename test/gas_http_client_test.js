@@ -1,136 +1,142 @@
-import GasHttpClient from '../lib/gas_http_client'
-import assert        from 'power-assert'
-import sinon         from 'sinon'
-import _             from 'lodash/lodash.min'
+/* global describe, it, beforeEach, afterEach */
 
-describe('GasHttpClient', ()=> {
+import assert from 'power-assert'
+import sinon from 'sinon'
+import gas from 'gas-local'
+
+const app = gas.require('./src', {
+  console
+})
+
+describe('GasHttpClient', () => {
   let client
-  
-  beforeEach(()=> {
-    client = new GasHttpClient({}, 'http://localhost:3000')
+
+  beforeEach(() => {
+    client = app.createClient({}, 'http://localhost:3000')
   })
 
-  describe('#app', ()=> {
-    it('return object received with first argument', ()=> {
+  describe('#app', () => {
+    it('return object received with first argument', () => {
       assert.deepEqual({}, client.app())
     })
   })
 
-  describe('#methods', ()=> {
-    it('', ()=> {
+  describe('#methods', () => {
+    it('', () => {
       assert.deepEqual(
         ['get', 'delete', 'patch', 'post', 'put'],
         client.methods())
     })
   })
 
-  describe('#endpoint', ()=> {
-    describe('thru', ()=> {
-      it('', ()=> {
+  describe('#endpoint', () => {
+    describe('thru', () => {
+      it('', () => {
         assert.equal('http://localhost:3000', client.endpoint())
       })
     })
 
-    describe('stub out', ()=> {
-      beforeEach(()=> {
+    describe('stub out', () => {
+      beforeEach(() => {
         sinon.stub(client, 'endpoint').returns('http://example.com')
       })
-      it('', ()=> {
+      afterEach(() => { sinon.restore() })
+      it('', () => {
         assert.equal('http://example.com', client.endpoint())
       })
     })
   })
 
-  describe('#isValidMethod', ()=> {
-    it('put is valid', ()=> {
+  describe('#isValidMethod', () => {
+    it('put is valid', () => {
       assert.equal(true, client.isValidMethod('put'))
     })
 
-    it('option is invalid', ()=> {
+    it('option is invalid', () => {
       assert.equal(false, client.isValidMethod('option'))
     })
 
-    it('1 is invalid', ()=> {
+    it('1 is invalid', () => {
       assert.equal(false, client.isValidMethod(1))
     })
   })
 
-  describe('#defaultOpts', ()=> {
-    it('typeof is object', ()=> {
+  describe('#defaultOpts', () => {
+    it('typeof is object', () => {
       assert.equal('object', typeof client.defaultOpts())
     })
 
-    it('size > 0', ()=> {
-      assert.equal(true, _.size(client.defaultOpts()) > 0)
+    it('size > 0', () => {
+      assert.equal(true, Object.keys(client.defaultOpts()).length > 0)
     })
   })
 
-  describe('#isValidOptionKey', ()=> {
-    it('method is isValid', ()=> {
+  describe('#isValidOptionKey', () => {
+    it('method is isValid', () => {
       assert.equal(true, client.isValidOptionKey('method'))
     })
 
-    it('header is not isValid', ()=> {
+    it('header is not isValid', () => {
       assert.equal(false, client.isValidOptionKey('header'))
     })
   })
 
-  describe('#opts', ()=> {
-    describe('getter', ()=> {
-      it('', ()=> {
-        assert.deepEqual({method: 'get'}, client.opts())
+  describe('#opts', () => {
+    describe('getter', () => {
+      it('', () => {
+        assert.deepEqual({ method: 'get' }, client.opts())
       })
     })
 
-    describe('setter', ()=> {
-      describe('valid', ()=> {
-        beforeEach(()=> {
-          client.opts({method: 'put'})
+    describe('setter', () => {
+      describe('valid', () => {
+        beforeEach(() => {
+          client.opts({ method: 'put' })
         })
-        it('', ()=> {
-          assert.deepEqual({method: 'put'}, client.opts())
+        it('', () => {
+          assert.deepEqual({ method: 'put' }, client.opts())
         })
       })
 
-      describe('invalid option key', ()=> {
-        it('', ()=> {
+      describe('invalid option key', () => {
+        it('', () => {
           assert.throws(
-            ()=> {
-              client.opts({methods: 'put'})
+            () => {
+              client.opts({ methods: 'put' })
             },
             /methods is not valid param/
-            )
+          )
         })
       })
 
-      describe('invalid method', ()=> {
-        it('', ()=> {
+      describe('invalid method', () => {
+        it('', () => {
           assert.throws(
-            ()=> {
-              client.opts({method: 'option'})
+            () => {
+              client.opts({ method: 'option' })
             },
             /option is not valid method/
           )
         })
       })
 
-      describe('update headers', ()=> {
-        beforeEach(()=> {
+      describe('update headers', () => {
+        beforeEach(() => {
           client.opts({
-            method:  'put',
+            method: 'put',
             headers: {
-              'Accept':     'application/json',
+              Accept: 'application/json',
               'User-Agent': 'Action'
             }
           })
         })
 
-        it('', ()=> {
+        it('', () => {
           assert.deepEqual(
             {
-              method:  'put',
+              method: 'put',
               headers: {
-                'Accept':     'application/json',
+                Accept: 'application/json',
                 'User-Agent': 'Brothers'
               }
             },
@@ -145,50 +151,50 @@ describe('GasHttpClient', ()=> {
     })
   })
 
-  describe('#headers', ()=> {
-    describe('getter', ()=> {
-      beforeEach(()=> {
+  describe('#headers', () => {
+    describe('getter', () => {
+      beforeEach(() => {
         client.clear()
       })
 
-      it('', ()=> {
+      it('', () => {
         assert.deepEqual({}, client.headers())
       })
     })
 
-    describe('setter', ()=> {
-      describe('once', ()=> {
-        beforeEach(()=> {
-          client.headers({'If-Modified-Since': new Date('2017-07-22')})
+    describe('setter', () => {
+      describe('once', () => {
+        beforeEach(() => {
+          client.headers({ 'If-Modified-Since': new Date('2017-07-22') })
         })
 
-        it('', ()=> {
+        it('', () => {
           assert.deepEqual(
-            {'If-Modified-Since': new Date('2017-07-22')},
+            { 'If-Modified-Since': new Date('2017-07-22') },
             client.headers())
         })
       })
 
-      describe('overwrite', ()=> {
-        beforeEach(()=> {
-          client.headers({'If-Modified-Since': new Date('2017-07-22')})
-          client.headers({'If-Modified-Since': new Date('2017-07-14')})
+      describe('overwrite', () => {
+        beforeEach(() => {
+          client.headers({ 'If-Modified-Since': new Date('2017-07-22') })
+          client.headers({ 'If-Modified-Since': new Date('2017-07-14') })
         })
 
-        it('', ()=> {
+        it('', () => {
           assert.deepEqual(
-            {'If-Modified-Since': new Date('2017-07-14')},
+            { 'If-Modified-Since': new Date('2017-07-14') },
             client.headers())
         })
       })
 
-      describe('append', ()=> {
-        beforeEach(()=> {
-          client.headers({'If-Modified-Since': new Date('2017-07-22')})
-          client.headers({'If-None-Match': 'b6dec5fa1e65ea2b8c7cb9ecc3074e44'})
+      describe('append', () => {
+        beforeEach(() => {
+          client.headers({ 'If-Modified-Since': new Date('2017-07-22') })
+          client.headers({ 'If-None-Match': 'b6dec5fa1e65ea2b8c7cb9ecc3074e44' })
         })
 
-        it('', ()=> {
+        it('', () => {
           assert.deepEqual(
             {
               'If-Modified-Since': new Date('2017-07-22'),
@@ -200,88 +206,89 @@ describe('GasHttpClient', ()=> {
     })
   })
 
-  describe('#deleteHeader', ()=> {
-    describe('exist', ()=> {
-      beforeEach(()=> {
-        client.headers({'If-Modified-Since': new Date('2017-07-22')})
+  describe('#deleteHeader', () => {
+    describe('exist', () => {
+      beforeEach(() => {
+        client.headers({ 'If-Modified-Since': new Date('2017-07-22') })
       })
 
-      it('return deleted object', ()=> {
+      it('return deleted object', () => {
         assert.deepEqual(
-          {'If-Modified-Since': new Date('2017-07-22')}
-          ,client.deleteHeader('If-Modified-Since'))
+          { 'If-Modified-Since': new Date('2017-07-22') }
+          , client.deleteHeader('If-Modified-Since'))
       })
     })
 
-    describe('not exist', ()=> {
-      it('return false', ()=> {
+    describe('not exist', () => {
+      it('return false', () => {
         assert.equal(false, client.deleteHeader('If-Modified-Since'))
       })
     })
   })
 
-  describe('#buildUrl', ()=> {
+  describe('#buildUrl', () => {
     // endpoint 'http://localhost:3000'
 
-    it('return endpoint  empty', ()=> {
+    it('return endpoint  empty', () => {
       assert.equal('http://localhost:3000', client.buildUrl())
     })
 
-    it('thru when absolute uri given', ()=> {
+    it('thru when absolute uri given', () => {
       assert.equal('http://example.com/path/to/endpoint?foo=bar', client.buildUrl('http://example.com/path/to/endpoint?foo=bar'))
     })
 
-    it('only path', ()=> {
+    it('only path', () => {
       assert.equal('http://localhost:3000/path/to/endpoint', client.buildUrl('/path/to/endpoint'))
     })
 
-    describe('relative path', ()=> {
+    describe('relative path', () => {
       let client
 
-      beforeEach(()=> {
-        client = new GasHttpClient({}, 'http://localhost:3000/path/to/endpoint')
+      beforeEach(() => {
+        client = app.createClient({}, 'http://localhost:3000/path/to/endpoint')
       })
 
-      it('parent', ()=> {
+      it('parent', () => {
         assert.equal('http://localhost:3000/path/', client.buildUrl('..'))
       })
     })
 
-    describe('query string', ()=> {
-      it('foo=bar without ?', ()=> {
-        assert('http://localhost:3000/?foo=bar' !== client.buildUrl('foo=bar'))
+    describe('query string', () => {
+      it('foo=bar without ?', () => {
+        assert(client.buildUrl('foo=bar') !== 'http://localhost:3000/?foo=bar')
       })
 
-      it('?foo=bar', ()=> {
+      it('?foo=bar', () => {
         assert('http://localhost:3000/?foo=bar', client.buildUrl('?foo=bar'))
       })
     })
 
-    describe('with object, replace parts', ()=> {
-      it('query {foo: "bar"}', ()=> {
-        assert.equal('http://localhost:3000/?foo=bar', client.buildUrl({query: {foo: 'bar'}}))
+    describe('with object, replace parts', () => {
+      // WHATWG URL object doesn't have query property
+
+      it('search is not object', () => {
+        assert.throws(
+          () => { client.buildUrl({ search: { foo: 'bar' } }) },
+          { name: 'TypeError' }
+        )
       })
 
-      it('search is not object', ()=> {
-        assert.throws(()=> {client.buildUrl({search: {foo: 'bar'}})}, TypeError)
-      })
-
-      it('search is string', ()=> {
-        assert.equal('http://localhost:3000/?foo=bar', client.buildUrl({search: 'foo=bar'}))
+      it('search is string', () => {
+        assert.equal('http://localhost:3000/?foo=bar', client.buildUrl({ search: 'foo=bar' }))
       })
     })
   })
 
-  describe('#buildParam', ()=> {
-    beforeEach(()=> {
-      client.headers({'User-Agent': 'Luckyman 2.0'})
+  describe('#buildParam', () => {
+    beforeEach(() => {
+      client.headers({ 'User-Agent': 'Luckyman 2.0' })
     })
 
-    it('', ()=> {
+    it('', () => {
       assert.deepEqual(
         {
-          'method':  'get',
-          'headers': {
+          method: 'get',
+          headers: {
             'User-Agent': 'Luckyman 2.0'
           }
         },
@@ -289,71 +296,71 @@ describe('GasHttpClient', ()=> {
     })
   })
 
-  describe('#buildParamForJSON', ()=> {
-    it('method get', ()=> {
+  describe('#buildParamForJSON', () => {
+    it('method get', () => {
       assert.deepEqual(
         {
-          'method': 'get',
-          'headers': {
-            'Accept': 'application/json'
+          method: 'get',
+          headers: {
+            Accept: 'application/json'
           }
         },
         client.buildParamForJSON())
     })
 
-    it('method post', ()=> {
+    it('method post', () => {
       assert.deepEqual(
         {
-          'method':      'post',
-          'contentType': 'application/json',
-          'headers':     {
-            'Accept': 'application/json'
+          method: 'post',
+          contentType: 'application/json',
+          headers: {
+            Accept: 'application/json'
           },
-          'payload': JSON.stringify({'hello': 'world'})
+          payload: JSON.stringify({ hello: 'world' })
         },
         client.buildParamForJSON({
-          'method':  'post',
-          'payload': {
-            'hello': 'world'
+          method: 'post',
+          payload: {
+            hello: 'world'
           }
         }))
     })
 
-    it('with jwt', ()=> {
+    it('with jwt', () => {
       assert.deepEqual(
         {
-          'method':      'post',
-          'contentType': 'application/json',
-          'payload':     JSON.stringify({
-            'hello': 'world',
-            'exp':   1500681600000
+          method: 'post',
+          contentType: 'application/json',
+          payload: JSON.stringify({
+            hello: 'world',
+            exp: 1500681600000
           }),
-          'headers':     {
-            'Accept':    'application/json',
+          headers: {
+            Accept: 'application/json',
             'X-GAS-JWT': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJoZWxsbyI6IndvcmxkIiwiZXhwIjoxNTAwNjgxNjAwMDAwfQ.ieEa6hVDwQW4CrsQEg6o92bvcREiRp81mv1UVZe2Gik'
           }
         },
         client.buildParamForJSON({
-          'method':  'post',
-          'payload': {
-            'hello': 'world',
-            'exp':   new Date('2017-07-22').getTime()
+          method: 'post',
+          payload: {
+            hello: 'world',
+            exp: new Date('2017-07-22').getTime()
           },
-          'withJWT': {
-            'secret':      'abc',
-            'headerField': 'X-GAS-JWT',
+          withJWT: {
+            secret: 'abc',
+            headerField: 'X-GAS-JWT'
           }
         })
       )
     })
   })
 
-  describe('#request', ()=> {
-    beforeEach(()=> {
-      sinon.stub(client, 'app').returns({fetch: function(){ return {} }})
+  describe('#request', () => {
+    beforeEach(() => {
+      sinon.stub(client, 'app').returns({ fetch: function () { return {} } })
     })
 
-    it("request()'s return value is response()", ()=> {
+    it("request()'s return value is response()", () => {
       assert.deepEqual(client.request(), client.response())
     })
   })
